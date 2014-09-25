@@ -1,0 +1,37 @@
+! nv: number of mesh vertices
+! nt: number of mesh elements
+! nvf: number of mesh used to discretise the fields. This may be different
+!      from nv
+! vxyz: array of corrdinates
+! v: list of vertices for the various mesh elements
+! e: list of neighours for the various mesh elements
+! vvoi: array of neighbour vertices in a tetrahedron, such that nvoi(1,j),
+!       nvoi(2,j), nvoi(3,j) rotate clockwise as seen from j
+! volum(t): volume of element t
+! volvor(i): volume of Voronoi cell at vertex i
+! voltot: total volume of the simulation domain
+! gradxyz(i,j,k): array of coefficients for computing component i of
+!   gradient of basis function j in element k
+! rho(i) net charge density at vertex i
+! phi(i): scalar potential at vertex i
+! phiPar(i): scalar potential for the particular solution (with the volume
+!            charge density and the potential set to zero on all structures
+! ifrext: index of outer boundary. If 0 in the data file, then the lowest
+!         index is used
+! nvoi: nombre total de voisins, incluant les points voisins a eux-memes
+!       et les paires de voisins (comptees deux fois)
+! indlin(i): indice du debut des indices voisins au noeud i, dans le
+!            tableau indvoi
+! indvoi: tableau des voisins des differents noeuds. Les voisins sont
+!         donnes dans un ordre croissant, sauf pour le noeud lui-meme
+!         qui apparait au debut de la liste, a la position
+!         indvoi(indlin(i))
+
+module meshdata
+  integer nv,nt,ifrext
+  integer nvoi
+  real :: voltot
+  integer, allocatable :: v(:,:),e(:,:),vvoi(:,:),indvoi(:),indlin(:)
+  real, allocatable :: vxyz(:,:),gradxyz(:,:,:), &
+    convv3(:,:,:),convb3(:,:,:),volum(:),volvor(:)
+endmodule meshdata

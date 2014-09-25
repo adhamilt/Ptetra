@@ -1,0 +1,233 @@
+//Input file for picTetra
+
+//Units: all units are in SI except for:
+//       - temperatures which are in eV,
+//       - charges which are in elementary charge e
+//       - masses which are in AMU
+// N.B.: Variables with a default value may be omitted
+
+//-------------------------------------------
+//  PLASMA PARAMETERS
+//-------------------------------------------
+//nepop: number of electron populations
+//nipop: number of ion populations
+//magfield: .true. (.false.) when there is (no) magnetic field
+//jandb: .true. (.false) to compute (or not) current density and B
+//       Default value: .false.
+//b_field: cartesian components of the background magnetic field
+&plasmaparameters
+ nepop=1
+ nipop=1
+ magfield=.false.
+ jandb=.false.
+ b_field=0. 0. 0.
+/
+
+//The code will create nepop+nipop species, as specified below.
+//  electron species must be specified first and variables must be
+//  given in the same sequence as given below.
+//ne: density of a given electron species
+//fromne(i): previous density. Used when changing electron density at
+//           restart. Ignored if negative. Default: -999.
+//te: temperature of a given electron species
+//vexyz: velocity vector of a given electron species
+//  repeat as many times as there are electron species
+//mi: mass (amu) of a given ion species
+//qi: charge (e) of a given ion species
+//ni: density of a given ion species
+//fromni(i): similar to fromne for ions
+//ti: temperature of a given ion species
+//vixyz: velocity vector of a given ion species
+//  repeat as many times as there are ion species
+$begin plasmaparameters
+  ne=5.53e7
+  fromne=-999.
+  te=1.0e-3
+  vexyz=0. 5e3    0.
+  mi=1.
+  qi=1.
+  ni=5.53e7
+  fromni=-999.
+  ti=1.0e-3
+  vixyz=0. 5e3    0.
+$end plasmaparameters
+
+//-------------------------------------------
+//  SIMULATION CONTROL PARAMETERS
+//-------------------------------------------
+//restartfrom: name of the restart file for a restart
+//             'null' for a fresh start
+//  N.B.: the name must include the timestep as in 'pictetrabin001234'
+//        and it may also include the path to restart file(s).
+//rdm: deprecated
+//     .true. of .false. for a restart or a fresh simulation respectively
+//     When restarting, the code reads from restart file "pictetra.rdm"
+//rdmfmt: true or false to produce formatted or unformatted restart files.
+//ntmax: maximum number of time steps
+//tstop: maximum duration of the simulation
+//epsildt: multiplying factor of the time step based on the estimated
+//         maximum particle speed and the linear scale factor of the
+//         smallest cell
+//dtrdm: number of timesteps between creation of restart files
+//       if negative, no restart file is printed
+//dtdia: number of timesteps between creation of diagnostics
+//ifrext: index of external boundary (from where plasma is injected)
+//        if 0, then the lowest boundary index is used
+//        may not be negative
+//outputformat: 'vu' to have output in Vu format.
+//              'vtk' to have output in VTK format.
+//              In any case, ouput is always produced in topo format.
+//              topo format is used for particle backtracking and
+//              postprocessing also, topo output is only produced at
+//              the end of the run
+//mpitimemax: maximum duration of a simulation in hours
+//mpitimerdm: wall clock interval between writing of restart files (h)
+&simulationparameters
+  restartfrom='null'
+  rdmfmt=.false.
+  ntmax=5
+  tstop=2.e-3
+  epsildt=1.0
+  dtrdm=-100000
+  dtdia=1000
+  ifrext=56
+  outputformat='vtk'
+  mpitimemax=72.0
+  mpitimerdm=12.0
+/
+  rdm=.false.
+
+//-------------------------------------------
+//  SIMULATION NUMERICAL PARAMETERS
+//-------------------------------------------
+//nepercell: target number of electrons in the smallest cell.
+//           used only if set > 0 in namelist. default=-99
+//netotIni: initial total number of electrons.
+//          used if nepercell < 0
+//speedup: speedup factor applied to the electron equation of motion every time
+//         step, electrons are pushed for a time step = dt/speedup
+//         The electron timestep is the calculated timestep divided by speedup
+//         Ions have the calculated timestep.
+//prefill: true or false to have a simulation domain initially filled with
+//         particles with the perscribed distribution function (true) or
+//         empty (false)
+//nofield: .t. or .f. to ignore all fields or calculate self consistently
+//         from solving Poisson's equation.
+//tauAv: relaxation time used to compute the phi and rho averages
+//scc_tau: relaxation time used to compute collected surface current
+//         densities
+//solMethod: GaussSeidel or YousefSaad_GMRES
+//           only use GaussSeidel for quick runs where Poisson's equation
+//           is not important.
+//EContinuous: selects continuous (.t.) or piecewise constant (.f.)
+//             interpolation of the electric field
+
+&numericalparameters
+  netotIni=5000000
+  speedup=1.
+  prefill=.true.
+  nofield=.true.
+  tauAv=1.e-4
+  scc_tau=1.e-4
+  solMethod='YousefSaad_GMRES'
+  EContinuous=.true.
+/
+
+//-------------------------------------------
+//  SPACECRAFT PARAMETERS
+//-------------------------------------------
+//sc_c_mult: Multiplicative factor for structure mutual capacitances
+//  after being computed from solving Laplace's equation, all capacitances
+//  are multiplied by sc_c_mult.
+//  This must be 1 whenever a finite B and cross velocity are specified.
+//sc_nnetBias: Number of networks of sc elements between which relative
+//  biasings are specified. Different networks are electrically independent
+//  from one another. Only elements within a given network are biased with
+//  respect to one another. If zero, no network will be considered and all
+//  SC elements will be treated as independently floating (and variables
+//  related to circuits and biases below will be ignored).
+//sc_fixedPot: array of potentials for each sc component fixed a priori.
+//  if first element == -9999. (default), potentials are computed self-
+//  consistently from mutual capacitances and collected charges.
+&satelliteparameters
+  sc_c_mult=1.
+  sc_nnetBias=0
+  sc_fixedPot=-9999.
+/
+//Definition of imposed collected current (A) by each satellite structure
+//element. For example, if component 1 collects 1.e10 more electrons than
+//ions per second, the corresponding entry would be "1  -1.602e-9"
+//By default, all components collect zero net current.
+//The begin iem - end iem construct below only needs to be specified when
+//non zero currents are speficied. That construct could be omitted
+//altogether, and default values would be used. There is no harm, however,
+//in specifying zero current explicitly for any number of components
+$begin iem
+1  0.0e-10
+$end iem
+
+//definition of network relative biases. biases are always defined with
+//respect to the 1st node in a given network. for example, if in a network
+//of two nodes, node 1 is set to 5 volts and node 2 to 5.5 volts, node 2
+//will be biased to 0.5 volts with respect to node 1, but the absolute
+//voltage of node 1 will not necessarily be 5 volts. It will be determined
+//from the collected/emitted currents. In other words, the voltage specified
+//for node 1 is not used to specify the absolute voltage of that node.
+//Caution: Nodes may only appear once (networks must be disjoint)
+//nnotes: number of nodes in a given network
+$begin netBias
+nnodes=0
+1  0.0
+2  1.0
+$end netBias
+
+//Definition of the structure materials. the list of material properties
+//are in the sc_materials.dat file. the parameters listed are described
+//in this file.
+$begin matid
+1  009
+$end matid
+
+//-------------------------------------------
+//  SOLAR PARAMETERS
+//-------------------------------------------
+//f107: multiplicative factor for emitting photoelectrons. The emitted
+//      current is that specified in the materials data file times f107
+//      If f107 == 0, then no photoelectrons are emitted. f107 ~ ratio
+//      between the actual F10.7 flux and the average value (~200).
+//colatsun: sun colatitude (degrees) in the spacecraft spherical coordinates
+//          ignored if < 0 (default <0)
+//azimusun: sun azimuth angle (degrees) in the spherical coordinates
+            ignored if colatsun < 0.
+//usun: vector pointing in the direction of the sun in the spacecraft
+//      system of coordinates. This is used instead of colatsun and azimusun
+//      when colatsun is negative or when colatsun is not specified.
+//numPhotoElec: number of macroparticle photoelectrons emitted per second
+//se_fromelec: swith to include (true) or not (false) secondary electron
+//             emission from electron impact (default .false.)
+//se_albedo: to accound (true) or not (false) for electron reflection
+//           (default .false.)
+//se_fromions: to account (true) or not (false) for secondary electron
+//             (default .false.)
+&solarparameters
+  f107=0.0
+  usun= 1. 0. 0.
+  numPhotoElec=1000.e7
+  se_fromelec=.true.
+  se_albedo=.false
+  se_fromions=.false'
+/
+
+//-------------------------------------------
+//  neutrals for charge exchange
+//-------------------------------------------
+//cxsigma: charge exchange cross section
+//dnn:     neutral density
+//tn:      neutral temperature
+//vn:      neutral velocity vector
+&cxneutrals
+  sigmacx=1.e-18
+  dnn=1.e18
+  tn=0.04
+  vn=0. 0. 0.
+/

@@ -1,0 +1,10 @@
+! scc_tau: relaxation time used to compute the currents
+! scc_cur(i,t): current going trough face i in element t
+! scc_cumul: cumulative relaxation weight for surface collected
+!            current densities
+
+module scc
+! integer, allocatable :: scc_ind(:,:)
+  real, allocatable :: scc_cur(:,:)
+  real :: scc_tau,scc_cumul
+endmodule scc

@@ -1,0 +1,12 @@
+module mpimod40
+! mpitimestart: starting wall clock time in seconds
+! mpitimeen: wall clock time at the end of the simulation
+! mpitime: wall clock time at a given point in the code
+! mpitimemax: maximum duration of a simulation
+! mpitimerdm: wall clock interval between writing of restart files
+! mpitimerdmlast: last wall clock time of restart file generation.
+
+real :: mpitimemax=601000.,mpitimerdm=172800.
+real mpitimestart,mpitimeend,mpitime,mpitimerdmlast
+
+end module mpimod40

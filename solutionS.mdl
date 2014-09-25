@@ -1,0 +1,18 @@
+! rho(i) net charge density at vertex i
+! phi(i): scalar potential at vertex i
+! phiPar(i): scalar potential for the particular solution (with the volume
+!            charge density and the potential set to zero on all structures
+! rhoAv: average value of rho, as calculated with tauAv
+! tauAv: time over which field averages are to be calculated. The averages
+!        approximate int(-inf,t){field(t')exp(-(t-t')/tauAv) dt'} / tauAv
+!        no average is made if tauAv<=0.
+! wAvCumul: cumulated weight used for calculating the average
+! Jxyz(i,j): vector array of the xyz (i=1,2,3) components of the current
+!            density at vertex j
+! JxyzAv(i,j): Average value of jxyz, as calculated with tauAv
+! Bxyz(i,j): component (i=1-3) of the perturbed magnetic field at vertex j.
+module solutionS
+  real, allocatable :: rho(:),phi(:),phiPar(:),rhoAv(:),phiAv(:) &
+                      ,Jxyz(:,:),JxyzAv(:,:),Bxyz(:,:)
+  real tauAv,wAvCumul
+endmodule solutionS

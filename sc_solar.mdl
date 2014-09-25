@@ -1,0 +1,33 @@
+! f107: F10.7 flux
+! sc_photoindex: starting position in arrays sc_photolist, sc_photonodes,
+!                sc_photocurnt, for the faces on the various structures.
+! sc_photolist: list of tetrahedra with faces on satellite structures
+! sc_photonodes: list of nodes opposite faces on satellite structures
+!                corresponding to the tetrahedra in sc_photolist
+! sc_photocurnt: list of currents (negative A) emitted from face
+!                elements on the satellite structures.
+! sc_seNb: number of secondary electrons emitted from face elements
+! sc_photoel(i): solar cross section of structure i
+! colatsun: co latitude of sun centre in local sc coordinates
+! azimusun: sun azimuthal angle
+! usun(i): components of the unit vector pointing toward the sun
+! radSunAng: angular radius of the sun
+! f107: multiplicative factor for emitting photoelectrons. The emitted
+!       current is that specified in the materials data file times f107
+!       If f107 == 0, then no photoelectrons are emitted.
+! se_fromelec: swith to include (true) or not (false) secondary electron
+!              emission from electron impact
+! se_albedo: to accound (true) or not (false) for electron reflection
+! se_fromions: to account (true) or not (false) for secondary electron
+!              emission by ion impact
+! sc_sunrings: number of rings used to integrate over the solar disk
+! sc_sunsectors: number of sectors used to integrate over the solar disk
+module sc_solar
+  integer, parameter :: sc_sunrings=10,sc_sunsectors=10
+  integer, allocatable :: sc_photoindex(:),sc_photolist(:), &
+    sc_photonodes(:)
+  real, allocatable :: sc_photoel(:),sc_photocurnt(:),sc_seNb(:)
+  real :: colatsun,azimusun,usun(3),radSunAng,f107
+  real :: numphotoelec,wphoto
+  logical :: se_fromelec,se_albedo,se_fromions
+endmodule sc_solar

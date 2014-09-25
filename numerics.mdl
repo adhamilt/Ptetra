@@ -1,0 +1,22 @@
+! nitmax: maximum number of iterations in the Poisson solver
+! epsconv: convergence residual in the Poisson solver
+! amt: global matrix in skyline format
+! bmt: right hand side in the global matrix equation
+! prefill: .t. or .f. if the volume is pre-filled with plasma or not.
+!          in not, plasma gradually fills the volume from the boundaries.
+! nofield: .t. or .f. to ignore all fields or calculate self consistently
+!          from solving Poisson's equation.
+! jandb: .t. (.f.) to include J and B (or not)
+! solMethod: GaussSeidel
+!            YousefSaad_GMRES
+! EContinuous: .t. or .f. whether the electric field is interpolated
+!               continuously or not. If not, E is piecewise constant.
+module numerics
+  integer, parameter :: nitmax=25
+  integer, allocatable :: ju(:),jlu(:)
+  real, parameter :: epsconv=1.e-10
+  real, allocatable :: amt(:),bmt(:)
+  real, allocatable :: alu(:),work(:)
+  character(len=80) :: solMethod='YousefSaad_GMRES'
+  logical prefill,nofield,EContinuous,jandb
+endmodule numerics

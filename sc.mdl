@@ -1,0 +1,50 @@
+! sc_nstruc: number of structures (not counting the outer boundary)
+! sc_table(i): index of scturcute i, as provided by gmsh. In the code,
+!              structures are referred to and identified by sc_table(i).
+! sc_c(i,j): mutual capacitance between i and j
+! sc_r(i,j): resistance between structure i and j
+! sc_v(i,j): relative voltage of j with respect to i
+! sc_iem(i): imposed net collected by element i (A)
+!            For example, if component 1 collects 1.e10 electrons per
+!            second, the corresponding entry would be "1  -1.602e-9"
+! sc_ci(i,j): inverse of the sc_c matix
+! sc_c_mult: multiplicative factor for mutual capacitances in sc structures
+!            must be 1 when magnetic field is non zero
+! sc_area: array of structure areas
+! sc_q(i): accumulated charge on spacecraft structure i
+! sc_i(i): current collected on element i
+! sc_phi(i): electric potential on structure i of the spacecraft
+! sc_nnetBias: number of networkbias
+! sc_nodesBias: list of nodes in a networkbias, the first node being the
+!               reference node
+! sc_listBias: index of all the nodes in sc_nodesBias. For a given
+!              network i, the indices of the nodes run from
+!              sc_listBias(i) to sc_listBias(i+1)-1
+! sc_bias(i): bias potential of element i with respect to its reference, in
+!             a given circuitbias
+! sc_fixedPot: fixed potential of component i
+!              If == -9999. (default), potentials are computed consistently
+!              from mutual capacitances and collected charges.
+! sc_matid(i): material id for structure i. This id corresponds to that
+!              used in file sc_materials.dat
+! sc_matWF(i): work function of material in structure i
+! sc_matSatCurnt(i): photoelectron saturation current of material in
+!                    structure i
+! sc_matmostProb(i): most probable energy (eV) of emitted photoelectrons
+!                    for material in structure i
+! se_emax: Emax for secondary electron emission
+! se_delmax: delta max for secondary electron emission
+! se_z: z parameter in secondary electron emission
+! se_a, se_b, se_c: a, b, c coefficients for back scattering of electrons
+! se_te: temperature of emitted secondary electrons
+
+module sc
+  integer sc_nstruc,sc_nnetBias
+  integer, allocatable :: sc_table(:),sc_listBias(:), &
+    sc_nodesBias(:),sc_matid(:)
+  real, allocatable :: sc_r(:,:),sc_c(:,:),sc_ci(:,:),sc_q(:),sc_i(:), &
+    sc_phi(:),sc_area(:),sc_v(:,:),sc_iem(:),sc_bias(:),sc_matWF(:),   &
+    sc_matSatCurnt(:),sc_matMostProb(:), se_emax(:),se_delmax(:),se_z(:), &
+    se_a(:),se_b(:),se_c(:),se_te(:)
+  real :: sc_c_mult,sc_fixedPot
+endmodule sc

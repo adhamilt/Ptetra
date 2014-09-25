@@ -1,0 +1,63 @@
+-----------------------------------------------------------------------
+   THE LIST OF PROPERTIES FOR VARIOUS MATERIALS
+-----------------------------------------------------------------------
+
+   This file is a list of properties for various materials that will 
+be assigned to the structures on the satellite. if no material is
+given then the default values will be as in the example
+
+Example:
+
+MatID 0			(identification number)
+default material	(material discription max one line)
+4.5                50d-6               0.95
+
+(work funtion    (saturation         (Most probable
+ ev)              current density     photoelectron
+                  A/m^2)              energy eV)
+Emax     delmax     Z         A         B         C         se_Te
+(keV)
+///////////////////////////////////////////////////////////////////////
+$begin
+MatID 0
+default material
+4.5                50.d-6              0.95
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 1
+Aluminum Oxide
+3.9                42.d-6              0.87
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 2
+Indium Oxide
+4.8                30.d-6              0.87
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 3
+Gold
+4.8                29.d-6              0.88
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 4
+Stainless Steel
+4.4                20.d-6              0.98
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 5
+Aquadag
+4.6                18.d-6              0.90
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 6
+LiF on Au
+4.4                15.d-6              0.87
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 7
+Vitreous Carbon
+4.8                13.d-6              1.17
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 8
+Graphite
+4.7                4.d-6               1.04
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+MatID 9
+SPP shield
+4.7                57.d-6              3.00
+0.30     2.6        10.       0.1238    0.01721   0.3435    2.0
+$end
+///////////////////////////////////////////////////////////////////////

@@ -1,0 +1,27 @@
+module cntrlsim
+! ntmax: maximum number of time steps
+! tstop: maximum simulation time
+! dtrdm: number of timesteps between writing a restart file
+! dtdia: number of timesteps between writing diagnostic files
+! dt: time step
+! time: time
+! epsildt: scaling factor used to set dt (should be < 1.)
+! timestep: timestep into the simulation
+! nepercell: target number of electrons in the smallest cell.
+!            If negative (default), the number of electrons is taken to be
+!            netotIni
+! netotIni: total initial number of electrons, only used if nepercell <=0.
+! speedup: numerical speedup factor for pushing electrons. each time step
+!          electrons are pushed over a period dt/speedup. indoing so, it
+!          is important to integrate electron currents over a full period dt
+! rdmfmt: true or false to produce (and read) formatted or unformatted
+!         restart files.
+! restartfrom: name of files from which to restart.
+!              "null" for no restart.
+! outputformat: 'topo' to save in topo format. In all cases, output is also
+!               saved in Vu format
+      integer ntmax,timestep,dtdia,dtrdm,netotIni
+      real :: tstop,dt,epsildt,time,speedup,nepercell
+      character(len=80) :: outputformat,restartfrom
+      logical rdmfmt
+endmodule cntrlsim
