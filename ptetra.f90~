@@ -593,7 +593,7 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
 						!Normalize 
 					!	vperp(:)=vperp(:)/sqrt((vperp(1)**2)+(vperp(2)**2)+(vperp(2)**2))
 						
-						momentum_t(1,iside,tside)=momentum_t(1,iside,tside)+1
+						momentum_t(1,iside,-t)=momentum_t(1,iside,-t)+1000
 	
           endif
           kigrd(ii)=t

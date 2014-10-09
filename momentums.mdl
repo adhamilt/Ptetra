@@ -1,0 +1,3 @@
+module momentums
+	real, allocatable :: momentum(:,:,:)
+endmodule momentums
