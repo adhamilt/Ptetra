@@ -23,8 +23,8 @@ include 'momentums.mdl' !Phys 499
 !  plasma physics processes
 
 !  variables
-      integer, parameter :: uinp=4,uout1=7,uout2=8,uout3=9,uout4=10,uout5=12, &
-                            uprcnd=11
+      integer, parameter :: uinp=4,uout1=7,uout2=8,uout3=9,uout4=10,uout5=12, & 
+														uout6=13,uprcnd=11
 !tempo
 !integer findt,t
 !external findt
@@ -129,7 +129,7 @@ include 'momentums.mdl' !Phys 499
 
 !  7.  push the simulation forward in time
       write(6,*)'call avancet'
-      call avancet(uout1,uout2,uout3,uout4,uout5)
+      call avancet(uout1,uout2,uout3,uout4,uout5,uout6)
 
 !  8.  end the simulation
       call cpu_time(mpitimeend)
@@ -182,7 +182,7 @@ include 'momentums.mdl' !Phys 499
       return
       end
 !=======================================================================
-      subroutine avancet(uout1,uout2,uout3,uout4,uout5)
+      subroutine avancet(uout1,uout2,uout3,uout4,uout5,uout6)
       use cntrlsim
       use kinetics
       use meshdata
@@ -204,7 +204,7 @@ include 'momentums.mdl' !Phys 499
 ! uout1: unit for writing output files
 ! uout2: unit for writing restart files
 ! uout3: unit for log file
-      integer uout1,uout2,uout3,uout4,uout5
+      integer uout1,uout2,uout3,uout4,uout5,uout6
 
 !  local variables
 ! bmtTmp: used to store the right hand side of Poisson's equation with
@@ -235,15 +235,15 @@ include 'momentums.mdl' !Phys 499
 
 !Variables for PHYS 499
 
-			real v12(3),v23(3),vperp(3), kprev(6)
+			real v12(3),v23(3),vnorm(3), kprev(6), tinter, xyzinter(3), mom_i(3), r_i(3)
 			real momentum_t(3,4,nt) !(xyz components, verticies, triangle)
-		
+			real torq_t(3), torqi(3) !(xyz components of the torque)
 
 !  procedures
       integer findtt
       external findtt
 
-			momentum_t(:,:,:)=0.
+
 
 !  computation
 
@@ -419,6 +419,9 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
           sc_seNb(:)=0. !new
           scc_t(:,:)=0.
 
+					momentum_t(:,:,:)=0.  !Phys 499
+					torq_t(:)=0.
+
 !  1.2 scc_cumul
           scc_cumul=scc_cumul*(1.-scc_w)+scc_w
           write(6,*)'scc_cumul=',scc_cumul
@@ -579,22 +582,43 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
 ! PHYS 499 Additions:
 !			Calculate the Drag			
 ! ***
+
+						!Find the normal of the side impacted
 						
-						!v12(:)=vxyz(:,v(vvoi(2,iside),-t))-vxyz(:,v(vvoi(1,iside),-t))
-						!v23(:)=vxyz(:,v(vvoi(3,iside),-t))-vxyz(:,v(vvoi(2,iside),-t))
-												
+					  v12(:)=vxyz(:,v(vvoi(2,iside),-t))-vxyz(:,v(vvoi(1,iside),-t))
+					  v23(:)=vxyz(:,v(vvoi(3,iside),-t))-vxyz(:,v(vvoi(2,iside),-t))
+
+					  vnorm(1)=(v12(2)*v23(3))-(v12(3)*v23(2))
+					  vnorm(2)=(v12(3)*v23(1))-(v12(1)*v23(3))
+					  vnorm(3)=(v12(1)*v23(2))-(v12(2)*v23(1))
+						
+
+					  !vnorm(:)=vnorm(:)/sqrt((vnorm(1)**2)+(vnorm(2)**2)+(vnorm(2)**2))
+						
+						tinter=dot_product((vxyz(:,v(vvoi(1,iside),-t))-kprev(1:3)),vnorm)/dot_product(kprev(4:6),vnorm)
+
+						xyzinter(1)=tinter*kprev(4)+kprev(1)
+						xyzinter(2)=tinter*kprev(5)+kprev(2)
+						xyzinter(3)=tinter*kprev(6)+kprev(3)
+
+					
+						r_i(:)=(xyzinter(:)-com(:))
+						mom_i(:)=(ki(4:6,ii)*ki(7,ii)*ki(9,ii))
+
+						!add the contributed momentum to momentum_t
+						momentum_t(:,iside,tside)=momentum_t(:,iside,tside)+mom_i(:)
+
+						torqi(1)=(r_i(2)*mom_i(3))-(r_i(3)*mom_i(2))
+						torqi(2)=(r_i(3)*mom_i(1))-(r_i(1)*mom_i(3))
+						torqi(3)=(r_i(1)*mom_i(2))-(r_i(2)*mom_i(1))
+
+						torq_t(:)=torq_t(:)+torqi(:)
 
 
-						!Take the Cross Product
-					!	vperp(1)=(v12(2)*v23(3))-(v12(3)*v23(2))
-					!	vperp(2)=(v12(3)*v23(1))-(v12(1)*v23(3))
-					!	vperp(3)=(v12(1)*v23(2))-(v12(2)*v23(1))
-						
-						!Normalize 
-					!	vperp(:)=vperp(:)/sqrt((vperp(1)**2)+(vperp(2)**2)+(vperp(2)**2))
-						
-						momentum_t(1,iside,tside)=momentum_t(1,iside,tside)+1
-	
+					!print *, "r_i= ", r_i
+					!print *, "mom_i= ", mom_i
+					!print *, "torqi= ", torqi
+
           endif
           kigrd(ii)=t
         enddo
@@ -622,7 +646,10 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
         endif
 
 ! 1.62 relax momentum on each face:  PHYS 499
-momentum(:,:,:)=momentum(:,:,:)*(1.-scc_w)+momentum_t(:,:,:)*scc_w
+momentum(:,:,:)=momentum(:,:,:)*(1.-scc_w)+momentum_t(:,:,:)*scc_w/dt
+
+! 1.63 relax torque on each face: PHYS 499
+torq(:)=torq(:)*(1.-scc_w)+torq_t(:)*scc_w/dt
 
 
 !  1.7 update fields, compute and print light diagnostics
@@ -674,7 +701,7 @@ endif
 !         produce vtk output for surface current densities
           call sccout(uout4)
 !					produce vtk output for momentum 								PHYS 499
-					call momout(uout5)
+					call momout(uout5,uout6)
 !!        if(index(outputformat,'topo') > 0) call outputTopo(uout1)
           if(otput) call outputTopo(uout1)
         endif
@@ -711,7 +738,7 @@ endif
 !       produce vtk output for surface current densities
         call sccout(uout4)
 !				produce vtk output for momentum 								PHYS 499
-				call momout(uout5)
+				call momout(uout5,uout6)
       endif
 !  produce topo output if required
       call outputTopo(uout1)
@@ -1144,6 +1171,7 @@ endif
       use physics
       use sc
       use solutionS
+			use momentums
       implicit none
 !  comupute and write light diangostics to be printed to the logfile
 
@@ -1205,6 +1233,8 @@ endif
         phiAv=phiAv*(1.-w)+phi*w
         if(jandb) JxyzAv=JxyzAv*(1.-w)+Jxyz*w
 print*,'wAvCumul=',wAvCumul
+
+print*,'Torq= ',torq(:) !PHYS 499
       else
         rhoAv=rho
         phiAv=phi
@@ -3993,6 +4023,7 @@ integer i
       use solutionS
       use sc_solar
       use mpimod40
+			use momentums
       implicit none
 !  read in input variables for the simulation
 
@@ -4004,7 +4035,7 @@ integer i
         epsildt,restartfrom,rdmfmt,outputformat,mpitimemax,mpitimerdm
       namelist/numericalparameters/speedup,nepercell,tauAv,prefill, &
                nofield,solMethod,EContinuous,scc_tau,netotIni
-      namelist/satelliteparameters/sc_c_mult,sc_nnetBias,sc_fixedPot
+      namelist/satelliteparameters/sc_c_mult,sc_nnetBias,sc_fixedPot,com
       namelist/solarparameters/colatsun,azimusun,usun,radSunAng,f107, &
                numPhotoElec,se_fromelec,se_albedo,se_fromions
 
@@ -4486,12 +4517,14 @@ integer i
 
 !  2.  initialization
       momentum(:,:,:)=0.
+			torq(:)=0.
 
       return
       end
+
 !=======================================================================
 !PHYS 499
-      subroutine momout(un)
+      subroutine momout(un,un2)
       use cntrlsim
       use meshdata
       use sc
@@ -4500,12 +4533,16 @@ integer i
       implicit none
 
 !  arguments
-      integer un
+      integer un,un2
 
 !  local variables
-      integer i,j,it,momnt
+      integer i,j,k,it,momnt
       real, allocatable :: mom(:)
       character(len=80) :: filename
+
+			real momarea,t1(3),t2(3),momen(3)
+			
+			momen(:)=0.
 
 !  computation
 
@@ -4530,20 +4567,35 @@ integer i
       momnt=0
       do it=1,nt
       do i=1,4
-        if(e(i,it) < 0 .and. -e(i,it) .ne. ifrext) momnt=momnt+1
+        if(e(i,it) < 0 .and. -e(i,it) .ne. ifrext) momnt=momnt+1				 
       enddo
       enddo
+
       allocate(mom(momnt))
       j=0
       do it=1,nt
       do i=1,4
         if(e(i,it) < 0 .and. -e(i,it) .ne. ifrext) then
           j=j+1
-          mom(j)=momentum(1,i,it)
+					
+					t1=vxyz(:,v(vvoi(2,i),it))-vxyz(:,v(vvoi(1,i),it))
+          t2=vxyz(:,v(vvoi(3,i),it))-vxyz(:,v(vvoi(1,i),it))
+
+					momarea=0.5*sqrt((t1(2)*t2(3)-t1(3)*t2(2))**2+ &
+            (t1(3)*t2(1)-t1(1)*t2(3))**2+(t1(1)*t2(2)-t1(2)*t2(1))**2)
+
+          mom(j)=sqrt((momentum(1,i,it)**2)+(momentum(2,i,it)**2)+(momentum(3,i,it)**2))/(momarea*scc_cumul)
+
+					momen(:)=momen(:)+momentum(:,i,it)
+					print*,'momentum: ',momen(:)
         endif
       enddo
       enddo
       write(un,*)
+
+			!print*,'scc_cumul= ',scc_cumul
+			momen(:)=momen(:)/scc_cumul
+			torq(:)=torq(:)/scc_cumul
 
 !  3.  cells
       write(un,105)'CELLS ',momnt,4*momnt
@@ -4572,12 +4624,24 @@ integer i
         write(un,102)mom(i)
       enddo
 
+!  5. Write the momentum and torque output file
+			open(unit=un2,file='momout.txt',status='unknown')
+			write(un2,101)'Drag Force:'			
+			write(un2,106)'x=',momen(1)
+			write(un2,106)'y=',momen(2)
+			write(un2,106)'z=',momen(3)
+			write(un2,101)'Torques:'
+			write(un2,106)'x=',torq(1)
+			write(un2,106)'y=',torq(2)
+			write(un2,106)'z=',torq(3)
+
       return
  101  format(a)
  102  format(99es15.6)
  103  format(i1,1x,i7,1x,i7,1x,i7)
  104  format(a,i7,1x,a)
  105  format(a,2i7)
+ 106  format(a,es15.6)
       end
 !=======================================================================
       subroutine sccout(un)

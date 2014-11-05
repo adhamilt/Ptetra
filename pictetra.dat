@@ -43,13 +43,13 @@ $begin plasmaparameters
   ne=0.
   fromne=-999.
   te=1.0e-3
-  vexyz=0. 5e3    0.
+  vexyz=0. 5.e3    0.
   mi=1.
-  qi=0.
+  qi=1.
   ni=5.53e7
   fromni=-999.
   ti=1.0e-3
-  vixyz=0. 5e3    0.
+  vixyz=0. 5.e3    0.
 $end plasmaparameters
 
 //-------------------------------------------
@@ -85,7 +85,7 @@ $end plasmaparameters
 &simulationparameters
   restartfrom='null'
   rdmfmt=.false.
-  ntmax=5
+  ntmax=1
   tstop=2.e-3
   epsildt=1.0
   dtrdm=-100000
@@ -128,7 +128,7 @@ $end plasmaparameters
   prefill=.true.
   nofield=.true.
   tauAv=1.e-4
-  scc_tau=1.e-4
+  scc_tau=1.
   solMethod='YousefSaad_GMRES'
   EContinuous=.true.
 /
@@ -153,6 +153,7 @@ $end plasmaparameters
   sc_c_mult=1.
   sc_nnetBias=0
   sc_fixedPot=-9999.
+	com=0. 0. 0.1
 /
 //Definition of imposed collected current (A) by each satellite structure
 //element. For example, if component 1 collects 1.e10 more electrons than

@@ -1,3 +1,7 @@
 module momentums
+
 	real, allocatable :: momentum(:,:,:)
+	real com(3)
+	real torq(3)
+
 endmodule momentums
