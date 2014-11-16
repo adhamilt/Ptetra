@@ -43,14 +43,15 @@ $begin plasmaparameters
   ne=0.
   fromne=-999.
   te=1.0e-3
-  vexyz=0. 5.e3    0.
+  vexyz=5.e3 0.    0.
   mi=1.
   qi=1.
   ni=5.53e7
   fromni=-999.
   ti=1.0e-3
-  vixyz=0. 5.e3    0.
-$end plasmaparameters
+  vixyz= 5.e3 0. 0.
+$end plasmaparam
+eters
 
 //-------------------------------------------
 //  SIMULATION CONTROL PARAMETERS
@@ -85,12 +86,12 @@ $end plasmaparameters
 &simulationparameters
   restartfrom='null'
   rdmfmt=.false.
-  ntmax=1
+  ntmax=3000
   tstop=2.e-3
   epsildt=1.0
   dtrdm=-100000
   dtdia=1000
-  ifrext=56
+  ifrext=427
   outputformat='vtk'
   mpitimemax=72.0
   mpitimerdm=12.0
@@ -198,8 +199,7 @@ $end matid
 //      between the actual F10.7 flux and the average value (~200).
 //colatsun: sun colatitude (degrees) in the spacecraft spherical coordinates
 //          ignored if < 0 (default <0)
-//azimusun: sun azimuth angle (degrees) in the spherical coordinates
-            ignored if colatsun < 0.
+//azimusun: sun azimuth angle (degrees) in the spherical coordinates            ignored if colatsun < 0.
 //usun: vector pointing in the direction of the sun in the spacecraft
 //      system of coordinates. This is used instead of colatsun and azimusun
 //      when colatsun is negative or when colatsun is not specified.
@@ -215,8 +215,8 @@ $end matid
   usun= 1. 0. 0.
   numPhotoElec=1000.e7
   se_fromelec=.false.
-  se_albedo=.false
-  se_fromions=.false'
+  se_albedo=.false.
+  se_fromions=.false.
 /
 
 //-------------------------------------------

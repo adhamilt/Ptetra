@@ -588,6 +588,7 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
 					  v12(:)=vxyz(:,v(vvoi(2,iside),-t))-vxyz(:,v(vvoi(1,iside),-t))
 					  v23(:)=vxyz(:,v(vvoi(3,iside),-t))-vxyz(:,v(vvoi(2,iside),-t))
 
+
 					  vnorm(1)=(v12(2)*v23(3))-(v12(3)*v23(2))
 					  vnorm(2)=(v12(3)*v23(1))-(v12(1)*v23(3))
 					  vnorm(3)=(v12(1)*v23(2))-(v12(2)*v23(1))
@@ -605,6 +606,10 @@ if(F107 > 0.) write(6,*) 'Photoelectrons emitted per time step=', &
 						r_i(:)=(xyzinter(:)-com(:))
 						mom_i(:)=(ki(4:6,ii)*ki(7,ii)*ki(9,ii))
 
+
+						!r_i(:)=0.
+						!mom_i(:)=0.
+						
 						!add the contributed momentum to momentum_t
 						momentum_t(:,iside,tside)=momentum_t(:,iside,tside)+mom_i(:)
 
@@ -1234,7 +1239,7 @@ endif
         if(jandb) JxyzAv=JxyzAv*(1.-w)+Jxyz*w
 print*,'wAvCumul=',wAvCumul
 
-print*,'Torq= ',torq(:) !PHYS 499
+!print*,'Torq= ',torq(:) !PHYS 499
       else
         rhoAv=rho
         phiAv=phi
@@ -4587,7 +4592,7 @@ integer i
           mom(j)=sqrt((momentum(1,i,it)**2)+(momentum(2,i,it)**2)+(momentum(3,i,it)**2))/(momarea*scc_cumul)
 
 					momen(:)=momen(:)+momentum(:,i,it)
-					print*,'momentum: ',momen(:)
+					!print*,'momentum: ',momen(:)
         endif
       enddo
       enddo
