@@ -25,6 +25,11 @@ include 'momentums.mdl' !Phys 499
 !  variables
       integer, parameter :: uinp=4,uout1=7,uout2=8,uout3=9,uout4=10,uout5=12, & 
 														uout6=13,uprcnd=11
+
+			integer k;
+
+			real randoms(10)
+
 !tempo
 !integer findt,t
 !external findt
@@ -56,6 +61,10 @@ include 'momentums.mdl' !Phys 499
 
 ! 41)inclure les perturbations electromagnetiques
 
+
+randoms=0.
+
+
 !  0.  initialse time
       call cpu_time(mpitimestart)
 
@@ -68,6 +77,16 @@ include 'momentums.mdl' !Phys 499
 !  2.  read input parameters
       write(6,*)'call readinput'
       call readinput(uinp)
+
+!	 2.1 set the random number seed PHYS 499
+			if(rand) then
+			call init_random_seed()
+
+			call random_number(randoms)
+
+			print*,'Random Numbers: ', randoms
+
+			endif
 
 !  3.  identify and initialise physical structures (from boundaries)
       write(6,*)'call structures'
@@ -4037,7 +4056,7 @@ integer i
 
       namelist/plasmaparameters/nepop,nipop,b_field,magfield,jandb
       namelist/simulationparameters/ntmax,tstop,dtrdm,dtdia,ifrext, &
-        epsildt,restartfrom,rdmfmt,outputformat,mpitimemax,mpitimerdm
+        epsildt,restartfrom,rdmfmt,outputformat,mpitimemax,mpitimerdm,rand
       namelist/numericalparameters/speedup,nepercell,tauAv,prefill, &
                nofield,solMethod,EContinuous,scc_tau,netotIni
       namelist/satelliteparameters/sc_c_mult,sc_nnetBias,sc_fixedPot,com
@@ -4249,7 +4268,7 @@ integer i
       integer, intent(in) :: uinp
 
       namelist/simulationparameters/ntmax,tstop,dtrdm,dtdia,ifrext, &
-        epsildt,restartfrom,rdmfmt,outputformat,mpitimemax,mpitimerdm
+        epsildt,restartfrom,rdmfmt,outputformat,mpitimemax,mpitimerdm,rand
 
 !  local variables
 !  none
@@ -5682,6 +5701,59 @@ print*,'indlin(nv+1)-1=',indlin(nv+1)-1
 
       return
       end
+!======================================================================
+          subroutine init_random_seed()
+            use iso_fortran_env, only: int64
+            implicit none
+            integer, allocatable :: seed(:)
+            integer :: i, n, un, istat, dt(8), pid
+            integer(int64) :: t
+          
+            call random_seed(size = n)
+            allocate(seed(n))
+            ! First try if the OS provides a random number generator
+            open(newunit=un, file="/dev/urandom", access="stream", &
+                 form="unformatted", action="read", status="old", iostat=istat)
+            if (istat == 0) then
+               read(un) seed
+               close(un)
+            else
+               ! Fallback to XOR:ing the current time and pid. The PID is
+               ! useful in case one launches multiple instances of the same
+               ! program in parallel.
+               call system_clock(t)
+               if (t == 0) then
+                  call date_and_time(values=dt)
+                  t = (dt(1) - 1970) * 365_int64 * 24 * 60 * 60 * 1000 &
+                       + dt(2) * 31_int64 * 24 * 60 * 60 * 1000 &
+                       + dt(3) * 24_int64 * 60 * 60 * 1000 &
+                       + dt(5) * 60 * 60 * 1000 &
+                       + dt(6) * 60 * 1000 + dt(7) * 1000 &
+                       + dt(8)
+               end if
+               pid = getpid()
+               t = ieor(t, int(pid, kind(t)))
+               do i = 1, n
+                  seed(i) = lcg(t)
+               end do
+            end if
+            call random_seed(put=seed)
+          contains
+            ! This simple PRNG might not be good enough for real work, but is
+            ! sufficient for seeding a better PRNG.
+            function lcg(s)
+              integer :: lcg
+              integer(int64) :: s
+              if (s == 0) then
+                 s = 104729
+              else
+                 s = mod(s, 4294967296_int64)
+              end if
+              s = mod(s * 279470273_int64, 4294967291_int64)
+              lcg = int(mod(s, int(huge(0), int64)), kind(0))
+            end function lcg
+          end subroutine init_random_seed
+
 !=======================================================================
       REAL*8 FUNCTION zero(fcn,x0,dx0,dxmin,fmin,xmin,xmax,itmax)
       IMPLICIT NONE

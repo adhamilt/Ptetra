@@ -43,13 +43,13 @@ $begin plasmaparameters
   ne=0.
   fromne=-999.
   te=1.0e-3
-  vexyz=5.e3 0.    0.
+  vexyz= 1.00e+04 0.00e+00 0.00e+00
   mi=1.
   qi=1.
   ni=5.53e7
   fromni=-999.
   ti=1.0e-3
-  vixyz= 5.e3 0. 0.
+  vixyz= 1.00e+04 0.00e+00 0.00e+00
 $end plasmaparam
 eters
 
@@ -83,10 +83,12 @@ eters
 //              the end of the run
 //mpitimemax: maximum duration of a simulation in hours
 //mpitimerdm: wall clock interval between writing of restart files (h)
+//rand: Choose whether to use a random seed, or the default seed
+
 &simulationparameters
   restartfrom='null'
   rdmfmt=.false.
-  ntmax=3000
+  ntmax=100
   tstop=2.e-3
   epsildt=1.0
   dtrdm=-100000
@@ -95,6 +97,7 @@ eters
   outputformat='vtk'
   mpitimemax=72.0
   mpitimerdm=12.0
+	rand= .true.
 /
   rdm=.false.
 

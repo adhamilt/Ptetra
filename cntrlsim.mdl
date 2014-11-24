@@ -20,8 +20,13 @@ module cntrlsim
 !              "null" for no restart.
 ! outputformat: 'topo' to save in topo format. In all cases, output is also
 !               saved in Vu format
+! rand:		Random number seed
+
+
       integer ntmax,timestep,dtdia,dtrdm,netotIni
       real :: tstop,dt,epsildt,time,speedup,nepercell
       character(len=80) :: outputformat,restartfrom
       logical rdmfmt
+			logical rand
+
 endmodule cntrlsim

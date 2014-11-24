@@ -3,7 +3,7 @@ FLAGS=  -O -r8 -warn
 FLAGS=  -O0 -g -C -r8 -check all -traceback
 FLAGS=  -O3 -r8 -warn
 FLAGS=  -O3 -fdefault-real-8 -fdefault-double-8
-FLAGS=  -O0 -fdefault-real-8 -fdefault-double-8 -fcheck=all
+#FLAGS=  -O0 -fdefault-real-8 -fdefault-double-8 -fcheck=all
 
 SPARSKIT= -L/home/richard/lib/ -lskit
 BLAS= -L/home/richard/lib/ -lblas
