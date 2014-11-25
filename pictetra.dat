@@ -17,7 +17,7 @@
 //b_field: cartesian components of the background magnetic field
 &plasmaparameters
  nepop=1
- nipop=1
+ nipop=7
  magfield=.false.
  jandb=.false.
  b_field=0. 0. 0.
@@ -43,13 +43,49 @@ $begin plasmaparameters
   ne=0.
   fromne=-999.
   te=1.0e-3
-  vexyz= 1.00e+04 0.00e+00 0.00e+00
-  mi=1.
-  qi=1.
-  ni=5.53e7
+  vexyz=  1.00e+04 0.00e+00 0.00e+00
+  mi=1.60e+01
+  qi=0.
+  ni=8.83e+00
   fromni=-999.
-  ti=1.0e-3
-  vixyz= 1.00e+04 0.00e+00 0.00e+00
+  ti=1.00e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=2.80e+01
+  qi=0.
+  ni=1.88e+00
+  fromni=-999.
+  ti=1.00e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=3.20e+01
+  qi=0.
+  ni=7.47e-02
+  fromni=-999.
+  ti=1.00e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=4.00e+00
+  qi=0.
+  ni=1.10e-01
+  fromni=-999.
+  ti=1.02e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=3.99e+01
+  qi=0.
+  ni=4.19e-04
+  fromni=-999.
+  ti=1.02e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=1.01e+00
+  qi=0.
+  ni=1.72e-03
+  fromni=-999.
+  ti=1.02e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
+  mi=1.40e+01
+  qi=0.
+  ni=4.48e-02
+  fromni=-999.
+  ti=1.02e+03
+  vixyz= -7.73e+03 0.00e+00 9.47e-13
 $end plasmaparam
 eters
 
