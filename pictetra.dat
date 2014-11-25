@@ -17,7 +17,7 @@
 //b_field: cartesian components of the background magnetic field
 &plasmaparameters
  nepop=1
- nipop=7
+ nipop=1
  magfield=.false.
  jandb=.false.
  b_field=0. 0. 0.
@@ -44,48 +44,12 @@ $begin plasmaparameters
   fromne=-999.
   te=1.0e-3
   vexyz=  1.00e+04 0.00e+00 0.00e+00
-  mi=1.60e+01
+   mi=1.
   qi=0.
-  ni=9.21e+09
+  ni=5.53e7
   fromni=-999.
-  ti=1.00e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=2.80e+01
-  qi=0.
-  ni=1.96e+09
-  fromni=-999.
-  ti=1.00e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=3.20e+01
-  qi=0.
-  ni=7.79e+07
-  fromni=-999.
-  ti=1.00e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=4.00e+00
-  qi=0.
-  ni=1.15e+08
-  fromni=-999.
-  ti=1.02e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=3.99e+01
-  qi=0.
-  ni=4.37e+05
-  fromni=-999.
-  ti=1.02e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=1.01e+00
-  qi=0.
-  ni=1.80e+06
-  fromni=-999.
-  ti=1.02e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
-  mi=1.40e+01
-  qi=0.
-  ni=4.68e+07
-  fromni=-999.
-  ti=1.02e+03
-  vixyz= -7.73e+03 0.00e+00 -9.47e-13
+  ti=1.0e-3
+  vixyz= 7.79e+00 0.00e+00 0.00e+00
 $end plasmaparam
 eters
 
@@ -119,12 +83,10 @@ eters
 //              the end of the run
 //mpitimemax: maximum duration of a simulation in hours
 //mpitimerdm: wall clock interval between writing of restart files (h)
-//rand: Choose whether to use a random seed, or the default seed
-
 &simulationparameters
   restartfrom='null'
   rdmfmt=.false.
-  ntmax=100
+  ntmax=3000
   tstop=2.e-3
   epsildt=1.0
   dtrdm=-100000
@@ -133,7 +95,6 @@ eters
   outputformat='vtk'
   mpitimemax=72.0
   mpitimerdm=12.0
-	rand= .true.
 /
   rdm=.false.
 

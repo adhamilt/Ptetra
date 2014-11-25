@@ -59,7 +59,12 @@ line=1;
 while(line==1)
 	
 	A=fgetl(fid);
-	out=[out A char(10)];
+	if(strncmp(A,' nipop=',7))
+		out=[out ' nipop=7' char(10)];
+	else
+		out=[out A char(10)];
+	end
+	
 	if(strncmp(A,'$begin plasmaparameters',23));
 		line=0;
 		break;
