@@ -40,9 +40,9 @@ if nargin<1
 velocity=[7E3 0 0];
 end
 
-V=0.015455; %volume of the simulation domain in m^3
+V=0.016128; %volume of the simulation domain in m^3
 
-ni=[O N2 O2 He Ar H N].*1E-6*V; %convert densities to #/m^3
+ni=[O N2 O2 He Ar H N].*1E3*V; %convert densities to #/m^3
 
 m=[15.9999 2*14.007 2*15.9999 4.0026 39.948 1.0079 14.007];
 
